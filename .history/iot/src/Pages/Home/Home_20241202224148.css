@@ -1,0 +1,164 @@
+
+.main {
+    display: flex;
+    flex-direction: column;
+    height : 100%;
+   
+    box-sizing: border-box; 
+}
+  
+.section {
+  width: 100%;
+  height : 100%;
+}
+
+
+
+.section-one{
+    width: 100%;
+    height : 100%;
+    display: flex;
+    flex-direction: row;
+   
+}
+
+.left{
+  width: 75%;
+}
+
+.right{
+  width: 25%;
+}
+
+.sensor{
+    height: 30%;
+}
+
+  
+.sensor-list {
+    height: 100%;
+    display: flex;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    justify-content: space-between; 
+    width: 100%; 
+}
+
+.sensor-item {
+    flex: 1; 
+  
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin: 10px;
+    min-width: 50px; 
+}
+  .sensor-item .sensor-digit {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+  }
+  
+  .sensor-item:nth-child(2){
+  }
+
+  .sensor-bar {
+    width: 100%;
+    height: 100px;
+    background-color: #e0e0e0;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    margin: 10px 0;
+  }
+  
+  .sensor-fill {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    border-radius: 8px;
+  }
+  
+  .sensor-item.light .sensor-fill {
+    background-color: #ffb74d; 
+  }
+  
+  .sensor-item.temperature .sensor-fill {
+    background-color: #ef5350; 
+  }
+  
+  .sensor-item.humidity .sensor-fill {
+    background-color: #42a5f5; 
+  }
+  
+  .label {
+    font-size: 0.9em;
+    font-weight: 600;
+    color: #777;
+  }
+  .chart {
+    height: 70%;
+    width: 100%;
+    padding: 0;
+  }
+.styleChart{
+  aspect-ratio: 7/3;
+}
+  .electric1 {
+    width: 100%;
+    margin-top: 5px;
+  }
+  
+  .electric1-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    gap: 15px;
+  }
+  
+  .electric1-item {
+    text-align: center;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 300px;
+  }
+  
+  
+  
+
+  .electric1-box {
+    position: relative;
+    margin-bottom: 10px;
+  }
+  
+  .electric1-input {
+    display: none;
+  }
+  
+  .electric1-label {
+    display: block;
+    width: 60px;
+    height: 30px;
+    background-color: #ddd;
+    border-radius: 15px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+
+  
+ 
+  

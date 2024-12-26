@@ -1,0 +1,201 @@
+.profile{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    padding: 5px;
+    margin: 0px 5px;
+    background-image: linear-gradient(to bottom right,#2c3e50,#3e2cdf);
+    border-radius: 0px 10px 10px 0px;
+    overflow: hidden;
+}
+
+img{
+    width: 200px;
+}
+
+.profile .profile__top{
+    height: 15%;
+    width: 100%;
+    /* background-color: aqua; */
+}
+
+.profile__card{
+    display: block;
+    margin: 0 auto;
+    width: 60%;
+    height: 80%;
+    background-color: white;
+    border-radius: 20px;
+    margin-bottom: 50px;
+}
+
+.profile .profile__bottom{
+    height: 70%;
+    width: 100%;
+}
+
+.profile__image{
+    height: 45%;
+    aspect-ratio: 1/1;
+    display: block;
+    margin: 0 auto;
+    border-radius: 50%;
+    transform: translateY(-50%);
+    padding: 5px;
+    background-color: #a194a2;
+    box-shadow: 0 0 10px 5px #2e262f;
+}
+
+.profile__image img{
+    overflow: hidden;
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* margin: 10px; */
+}
+.profile__info{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: -50px;
+}
+.profile__name{
+    font-size: 20px;
+    font-weight: 600;
+    color:#30322C;
+}
+
+.profile__position{
+    font-size: 12px;
+    font-weight: 700;
+    color:#7D7E83;
+    margin-bottom: 70px;
+}
+
+.profile__social{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 300px;
+    font-size: 30px;
+    margin-bottom: 50px;
+}
+
+.profile__facebook,
+.profile__instagram,
+.profile__twitter,
+.profile__github{
+    position: relative;
+    z-index: 3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* cursor: pointer; */
+}
+
+.profile__facebook::after,
+.profile__instagram::after,
+.profile__twitter::after,
+.profile__github::after{
+    content: "";
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #196CBB;
+    box-shadow: 0 0 5px 1px #196CBB;
+    top:50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    z-index: 1;
+}
+
+.profile__instagram::after{
+    background-image: linear-gradient(to top right,#594FDC,#5632d9);
+    box-shadow: 0 0 5px 1px #5332d9;
+}
+
+.profile__twitter::after{
+    background-color: #1B8FE4;
+    box-shadow: 0 0 5px 1px #1B8FE4;
+}
+
+.profile__github::after{
+    background-color:#21201C ;
+    box-shadow: 0 0 5px 1px #21201C;
+}
+
+
+
+.profile__social i{
+    position: relative;
+    z-index: 4;
+    color:white;
+    font-size: 16px;
+}
+
+.profile__content{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+
+
+.profile__item{
+    display: flex;
+    flex-direction: column;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.proflie__item label{
+    margin-bottom: 10px;
+}
+
+.profile__item input{
+    border-radius: 10px;
+    padding: 10px 15px;
+    outline: none;
+    border:1px solid #7384E4;
+    font-size: 20px;
+}
+.profile__social2{
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.profile__social2 label{
+    display: block;
+    margin-bottom: 5px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.profile__social2 input{
+    cursor: pointer;
+    width: 150px;
+    padding: 5px 10px;
+    border-radius: 8px;
+
+}   
+.profile__social li .api img {
+    width: 40px; /* Set the width to your desired size */
+    height: 40px; /* Set the height to match the width, or adjust as needed */
+    object-fit: contain; /* Ensures the image scales nicely within the given dimensions */
+    border-radius: 50%; /* Optional: If you want the image to be circular */
+    transition: transform 0.3s ease; /* Adds a smooth animation for hover effects */
+}
+
+.profile__social li .api img:hover {
+    transform: scale(1.1); /* Optional: Slight zoom effect on hover */
+}
+
+
+
+

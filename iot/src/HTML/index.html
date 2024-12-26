@@ -1,0 +1,530 @@
+<!-- import './DataLogs.css';
+import { useState,useEffect,useRef } from 'react';
+function DataLogs(){
+    
+    
+    const [dataLog,setDataLog] = useState([]);
+    const [data,setData] = useState([]);      // data in ra trong bảng
+
+    useEffect(()=>{
+        console.log("use1");
+        // const interval = setInterval( () =>{
+        // }, 1000);
+        // return () => clearInterval(interval);
+        fetch(`http://localhost:3001/data`)
+        .then(res => res.json())
+        .then(data => {
+            // console.log(data);
+            setDataLog(data);
+            setData(data.slice(0,10));
+        });
+    },[]);
+
+
+    const [selectKey,setSelectKey] = useState('');      // giá trị người dùng chọn 
+    const [selectInput,setSelectInput] = useState("");  // giá trị của ô input
+    const inputRef = useRef(null);                      // input nhập giá trị
+    const inputRef1 = useRef(null);                      // input nhập giá trị
+    const inputRef2 = useRef(null);                      // input nhập giá trị
+    const [pageNumber,setPageNumber] = useState(10);    // số lượng hàng 1 bảng
+    const [currentPage,setCurrentPage] = useState(1);   // trang hiện tại
+    const [sort,setSort] = useState({key:'',direction:''});
+    const [afterSort,setAfterSort] = useState("");
+    const [startTime,setStartTime] = useState("");
+    const [endTime,setEndTime] = useState("");
+    const [timeData,setTimeData] = useState("");
+
+    const totalPage = Math.ceil(parseFloat([...dataLog].length / pageNumber)); 
+    const startPage = (currentPage - 1) * pageNumber    ; 
+    const endPage = startPage + pageNumber  ;
+    
+    
+
+    useEffect(() =>{
+        console.log("use2");
+        if(afterSort !== ""){
+            setData(afterSort.slice(startPage,endPage));
+        }
+        else if(selectKey === "time")
+        {
+            setData(timeData.slice(startPage,endPage));
+        }
+        else{
+            // console.log("pageNumber"+pageNumber );
+            // console.log("startPage"+startPage );
+            // console.log("endPage"+endPage );
+            setData([...dataLog].slice(startPage,endPage));
+        }     
+    },[currentPage,pageNumber]);
+
+    // console.log("pageNumber"+pageNumber );
+    // console.log("startPage"+startPage );
+    // console.log("endPage"+endPage );
+// tổng có 30 hàng mỗi trang 10 trang tổng 3 trang, nếu ấn trang 1 thì bắt đầu in từ hàng 0-9,trang 2 từ 10-19, trang 3 20-29
+// nếu trang 1 thì ko có prePage,nếu trang cuối ko có nextPage
+
+    const log = (value) =>{
+        console.log(value);
+    }
+
+
+    // Hàm khi người dùng chọn đơn vị so sánh
+    const handleSetSelectKey = (e) =>{
+        log(e.target.value);
+        setSelectKey(e.target.value);
+    }
+    
+    // Hàm lưu lại giá trị người dùng nhập
+    const handleChangeInput = (e) =>{
+      
+       setSelectInput(e.target.value);
+
+    }
+    
+    // Hàm để lọc giá trị cần tim, sau khi click icon search
+    const handleClickIconSearch = () => {
+        log(selectKey);
+        if(selectKey !== "time"){
+            const result = [...dataLog].filter(item => item[selectKey] === parseFloat(selectInput));
+            
+            setData(result);
+            setSelectKey("");
+            setSelectInput("");
+            inputRef.current.focus();
+            inputRef.current.value="";
+        }
+        else if(selectKey === "time"){
+            console.log(new Date(startTime));
+            console.log(new Date(endTime));
+            const result = [...dataLog].filter(item => {
+                const timeNow = new Date(item[selectKey]);
+                return timeNow >= new Date(startTime) && timeNow <= new Date(endTime);
+            })
+            setData(result.slice(startPage,endPage));
+            setTimeData(result);
+            // setSelectKey("");
+            setSelectInput("");
+            inputRef1.current.focus();
+            inputRef1.current.value="";
+            inputRef2.current.value="";
+        }
+        if(selectKey===""){
+            setData([...dataLog].slice(startPage,endPage));
+            setPageNumber(10);
+            setCurrentPage(1);
+            
+        }
+    }
+
+    const  handleNextPage = (e) =>{
+        if(currentPage === totalPage ) return;
+        setCurrentPage(currentPage + 1);
+    }
+    const handlePrePage = (e) =>{
+        if(currentPage === 1 ) return;
+        setCurrentPage(currentPage - 1);
+    }
+
+    const handleSetPageNumber = (e) =>{
+        setPageNumber(e.target.value);
+        console.log(e.target.value);
+        setCurrentPage(1);
+    }
+
+    // Hàm sắp xếp dữ liệu khi click vào thead của các cột 
+    // logic hoạt động: click lần 1 giảm dần, lần 2 tăng dần, lần 3 quay lại ban đầu
+    // Khi click lần một key:light-direction:asc lần hai key:light-direction:desc lần ba key:light-direction:desc
+    // dựa vào sự thay đổi key và direction theo từng lần click để tạo logic
+    const handleSort = (key) =>{
+        let direction = "asc";
+        if( sort.key === key && sort.direction === "asc" ){
+            direction ="desc"
+            console.log("desc")
+        }else if( sort.key === key && sort.direction === "desc" ){
+            setAfterSort("");
+            setSort({key:'',direction:''});
+            setData([...dataLog].slice(startPage,endPage));
+            setCurrentPage(1);
+            console.log('normal');
+            return;
+            // console.log("hello");
+        }
+
+
+        // Điều kiện: khi a < b và sắp xếp tăng dần -> return -1 ko thay đổi 
+        // khi a > b và sắp xếp tăng dần thì -> return 1 thay đổi a ra sau b
+        // tương tự với hàm desc
+        const sorted = [...dataLog].sort((a,b) =>{
+            if( (a[key] < b[key]) && direction === "asc" ){
+                return -1;
+            }else if( (a[key] > b[key]) && direction === "asc" ){
+                return 1;
+            }else if( (a[key] > b[key]) && direction === "desc"  ){
+                return -1;
+            }else if( (a[key] < b[key]) && direction === "desc" ){
+                return 1;
+            }
+        })
+        
+        // 2 trường hợp đầu sẽ rơi vào đây setAfterSort = sorted
+        // trang đầu tiên thì sử dụng luôn sorted.slice 
+        // các trang sau sử dụng afterSort.slice
+        setAfterSort([...sorted]);
+        setData(sorted.slice(startPage,endPage));
+        setSort({key,direction});
+        setCurrentPage(1);
+        
+    }
+
+    // console.log(startTime);
+    // console.log(endTime);
+    return(
+        <>
+            
+            <div className='action'>
+                <h2 className="action-title" >
+                   DataLog
+                </h2>
+                <div className="option">
+                    <div className="search">
+                        {selectKey === "time" ? <>
+                            <input ref={inputRef1}  type="datetime-local" placeholder="search" className="search__input-start" onChange={(e) => setStartTime(e.target.value)} ></input>
+                            <input ref={inputRef2} type="datetime-local" placeholder="search" className="search__input-end" onChange={(e) => setEndTime(e.target.value)} ></input>
+                        </>
+                        :
+                        <>
+                            <input ref={inputRef} type="text" placeholder="search" className="search__input" onChange={handleChangeInput}></input>
+                            {/* onChange={handleChangeInput} */}
+                        </>
+                        }
+                        <i class="fa-solid fa-magnifying-glass search__icon" onClick={handleClickIconSearch}></i>
+                    </div>
+                    <div className="select">
+                        <select value ={selectKey} className="select__list" onChange={handleSetSelectKey} >
+                            <option  className="select__option1" value={'temperature'}>Temperature</option>
+                            <option  className="select__option2" value={'humidity'}>Humidity</option>
+                            <option className="select__option3" value={'light'}>Light</option>
+                            <option className="select__option4" value={'time'}>Time</option>
+                            <option className="select__option5" value="" hidden>--Hãy chọn giá trị--</option>
+                        </select>
+                    </div>
+                    <div className="select2">
+                        <select value ={pageNumber} className="select__list" onChange={handleSetPageNumber} >
+                            <option  className="select2__option1" value={10}>10 hàng</option>
+                            <option  className="select2__option2" value={20}>20 hàng</option>
+                            <option className="select2__option3" value={30}>30 hàng</option>
+                            <option className="select2__option4" value="" hidden>--Hãy chọn giá trị--</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div className='table__container'>
+                    <table className="table">
+                        <thead className = "table__head">
+                            <tr className="table-row__head">
+                                <th classname="table__id table-row__item">ID</th>
+                                <th className="table__temperature table-row__item" onClick={() => handleSort('temperature')}>Nhiệt độ (°C)</th>
+                                <th className="table__humidity table-row__item" onClick={() => handleSort('humidity')}>Độ ẩm (%)</th>
+                                <th className="table__light table-row__item" onClick={() => handleSort('light')}>Ánh sáng (lux)</th>
+                                <th className="table__time table-row__item" >Thời gian</th>
+                            </tr>
+                        </thead>
+                        <tbody className="table__body">
+                            {data.map((item) => (
+                                <tr className="table-row__body" key={item.stt}>
+                                    <td>{item.stt}</td>
+                                    <td>{item.temperature}</td>
+                                    <td>{item.humidity}</td>
+                                    <td>{item.light}</td>
+                                    <td>{item.time}</td>
+                                </tr>
+
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div className='pagination'>
+                    <ul className='pagi__list'>
+                        <li className='pagi__pre pagi__item' onClick={handlePrePage}>
+                        {totalPage === 1 ? "" : 
+                            <>
+                                { currentPage === 1 ? "" : 
+                                <>
+                                <i class="fa-solid fa-backward"></i>
+                                </>
+                                }
+                            </>
+                            }
+                        </li>
+                        <li className='pagi__cur pagi__item'>{currentPage}</li>
+                        <li className='pagi__next pagi__item' onClick={handleNextPage}>
+                            {totalPage === 1 ? "" : 
+                            <>
+                                { currentPage === totalPage ? "" : 
+                                <>
+                                <i class="fa-solid fa-forward"></i>
+                                </>
+                                }
+                            </>
+                            }
+                            
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </>
+    )
+};
+
+export default DataLogs;
+ -->
+
+
+ import './Action.css';
+import {useEffect, useRef, useState} from 'react';
+
+
+function Action(){
+   
+
+    
+     const dataLog = [
+        { id: 1,device:"air_conditioner" ,action: "On", time: "2024-08-25 14:00" },
+        { id: 2,device:"light" ,action: "Off", time: "2024-08-25 14:05" },
+        { id: 3,device:"temperature" ,action: "Off", time: "2024-08-25 14:10" },
+        { id: 4,device:"air_conditioner" ,action: "On", time: "2024-08-25 14:15" },
+        { id: 5,device:"light" ,action: "Off", time: "2024-08-25 14:20" },
+        { id: 6,device:"air_conditioner" ,action: "On", time: "2024-08-25 14:25" },
+        { id: 7,device:"temperature" ,action: "On", time: "2024-08-25 14:30" },
+        { id: 8,device:"light" ,action: "Off", time: "2024-08-25 14:35" },
+        { id: 9,device:"air_conditioner" ,action: "On", time: "2024-08-25 14:40" },
+        { id: 10,device:"light" ,action: "Off", time: "2024-08-25 14:45" },
+        { id: 11,device:"temperature" ,action: "On", time: "2024-08-25 14:00" },
+        { id: 12,device:"air_conditioner" ,action: "Off", time: "2024-08-25 14:05" },
+        { id: 13,device:"air_conditioner" ,action: "Off", time: "2024-08-25 14:10" },
+        { id: 14,device:"light" ,action: "On", time: "2024-08-25 14:15" },
+        { id: 15,device:"temperature" ,action: "Off", time: "2024-08-25 14:20" },
+        { id: 16,device:"air_conditioner" ,action: "On", time: "2024-08-25 14:25" },
+        { id: 17,device:"light" ,action: "On", time: "2024-08-25 14:30" },
+        { id: 18,device:"air_conditioner" ,action: "On", time: "2024-08-25 14:35" },
+        { id: 19,device:"temperature" ,action: "On", time: "2024-08-25 14:40" },
+        { id: 20,device:"light" ,action: "On", time: "2024-08-25 14:45" },
+        { id: 21,device:"air_conditioner" ,action: "On", time: "2024-08-25 14:00" },
+        { id: 22,device:"light" ,action: "Off", time: "2024-08-25 14:05" },
+        { id: 23,device:"light" ,action: "Off", time: "2024-08-25 14:10" },
+        { id: 24,device:"air_conditioner" ,action: "On", time: "2024-08-25 14:15" },
+        { id: 25,device:"air_conditioner" ,action: "Off", time: "2024-08-25 14:20" },
+        { id: 26,device:"light" ,action: "On", time: "2024-08-25 14:25" },
+        { id: 27,device:"temperature" ,action: "On", time: "2024-08-25 14:30" },
+        { id: 28,device:"light" ,action: "On", time: "2024-08-25 14:35" },
+        { id: 29,device:"air_conditioner" ,action: "Off", time: "2024-08-25 14:40" },
+        { id: 30,device:"air_conditioner" ,action: "On", time: "2024-08-25 14:45" },
+        { id: 31,device:"air_conditioner" ,action: "Off", time: "2024-08-25 14:40" },
+        { id: 32,device:"temperature" ,action: "On", time: "2024-08-25 14:45" },
+    ];
+    
+    const [selectKey,setSelectKey] = useState('');      // giá trị người dùng chọn 
+    const [selectInput,setSelectInput] = useState("");  // giá trị của ô input
+    const [data,setData] = useState([...dataLog]);      // data in ra trong bảng
+    const inputRef = useRef(null);                      // input nhập giá trị
+    const [pageNumber,setPageNumber] = useState(10);    // số lượng hàng 1 bảng
+    const [currentPage,setCurrentPage] = useState(1);   // trang hiện tại
+    // const [sort,setSort] = useState({key:'',direction:''});
+    const [searchPagi,setSearchPagi] = useState("");
+
+    const totalPage = Math.ceil(parseFloat([...dataLog].length / pageNumber)); 
+    const startPage = (currentPage - 1) * pageNumber    ; 
+    const endPage = startPage + pageNumber  ;
+    
+
+    // mỗi khi trang hiên tại thay đổi hoặc số phần tử mõi trang thay đổi thì re-render lại web
+    useEffect(() =>{
+        if(searchPagi==="")
+        {
+            setData([...dataLog].slice(startPage,endPage));
+        }else{
+            setData(searchPagi.slice(startPage,endPage));
+        }
+    },[currentPage,pageNumber]);
+// tổng có 30 hàng mỗi trang 10 trang tổng 3 trang, nếu ấn trang 1 thì bắt đầu in từ hàng 0-9,trang 2 từ 10-19, trang 3 20-29
+// nếu trang 1 thì ko có prePage,nếu trang cuối ko có nextPage
+
+    const log = (value) =>{
+        console.log(value);
+    }
+
+
+    // Hàm khi người dùng chọn đơn vị so sánh
+    const handleSetSelectKey = (e) =>{
+        log(e.target.value);
+        setSelectKey(e.target.value);
+    }
+    
+    // Hàm lưu lại giá trị người dùng nhập
+    const handleChangeInput = (e) =>{
+       setSelectInput(e.target.value);
+    }
+    
+    // Hàm để lọc giá trị cần tim, sau khi click icon search
+    const handleClickIconSearch = () => {
+        if(selectKey !== "Time"){
+            const result = [...dataLog].filter(item => item[selectKey] === selectInput);
+            setData(result.slice(startPage,endPage));
+            setSearchPagi(result);
+            setSelectKey("");
+            setSelectInput("");
+            inputRef.current.focus();
+            inputRef.current.value="";
+        }
+        if(selectKey===""){
+            setData([...dataLog].slice(startPage,endPage));
+            setPageNumber(10);
+            setCurrentPage(1);
+            
+        }
+    }
+
+    // Hàm tăng giá trị trang hiện tại lên 1 đơn vị
+    const  handleNextPage = (e) =>{
+        if(currentPage === totalPage ) return;
+        setCurrentPage(currentPage + 1);
+    }
+
+    // Hàm giảm giá trị trong hiện tại đi một đơn vị
+    const handlePrePage = (e) =>{
+        if(currentPage === 1 ) return;
+        setCurrentPage(currentPage - 1);
+    }
+
+    // Hàm thay đổi số lượng hàng dữ liệu trong 1 bảng
+    const handleSetPageNumber = (e) =>{
+        setPageNumber(e.target.value);
+        console.log(e.target.value);
+        setCurrentPage(1);
+    }
+
+    
+    <!-- return(
+        <>
+            
+            <div className='action'>
+                <h2 className="action-title" >
+                    Action History
+                </h2>
+                <div className="option">
+                    <div className="search">
+                        <input ref={inputRef} type="text" placeholder="search" className="search__input" onChange={handleChangeInput}></input>
+                        <i class="fa-solid fa-magnifying-glass search__icon" onClick={handleClickIconSearch}></i>
+                    </div>
+                    <div className="select">
+                        <select value ={selectKey} className="select__list" onChange={handleSetSelectKey} >
+                            <option  className="select__option1" value={'device'}>Device</option>
+                            <option  className="select__option2" value={'action'}>Action</option>
+                            <option className="select__option3" value="" hidden>--Hãy chọn giá trị--</option>
+                        </select>
+                    </div>
+                    <div className="select2">
+                        <select value ={pageNumber} className="select__list" onChange={handleSetPageNumber} >
+                            <option  className="select2__option1" value={10}>10 hàng</option>
+                            <option  className="select2__option2" value={20}>20 hàng</option>
+                            <option className="select2__option3" value={30}>30 hàng</option>
+                            <option className="select2__option4" value="" hidden>--Hãy chọn giá trị--</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div className='table__container'>
+                    <table className="table">
+                        <thead className = "table__head">
+                            <tr className="table-row__head">
+                                <th classname="table__id table-row__item">ID</th>
+                                <th className="table__device table-row__item" >Device</th>
+                                <th className="table__action table-row__item" >Action</th>
+                                <th className="table__time table-row__item" >Thời gian</th>
+                            </tr>
+                        </thead>
+                        <tbody className="table__body">
+                            {data.map((item) => (
+                                <tr className="table-row__body" key={item.id}>
+                                    <td>{item.id}</td>
+                                    <td>{item.device}</td>
+                                    <td>{item.action}</td>
+                                    <td>{item.time}</td>
+                                </tr>
+
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div className='pagination'>
+                    <ul className='pagi__list'>
+                        <li className='pagi__pre pagi__item' onClick={handlePrePage}>
+                        {totalPage === 1 ? "" : 
+                            <>
+                                { currentPage === 1 ? "" : 
+                                <>
+                                <i class="fa-solid fa-backward"></i>
+                                </>
+                                }
+                            </>
+                            }
+                        </li>
+                        <li className='pagi__cur pagi__item'>{currentPage}</li>
+                        <li className='pagi__next pagi__item' onClick={handleNextPage}>
+                            {totalPage === 1 ? "" : 
+                            <>
+                                { currentPage === totalPage ? "" : 
+                                <>
+                                <i class="fa-solid fa-forward"></i>
+                                </>
+                                }
+                            </>
+                            }
+                            
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </>
+    )
+};
+export default Action;
+
+// 1 phân trang
+// 2 số lượng column trên trang
+// fix lỗi 20 hàng mà chỉ có 1 trang dữ liệu
+// 3 sort từng ô fix khi click vao tim kiem thi tro ve 30 hang, fix khi sort lan 3 tro ve 30 hang
+// khi mình sort lần đầu setData(sorted) sẽ đúng vì đã đc sort và phân trang,
+// còn khi chuyển trang -> pageNumber thay đổi -> useEffect thay đổi dẫn tới
+// setData([...datalogs]) mà datalogs chưa đc sắp xếp
+// giải pháp: tạo 1 mảng để lưu sorted luu y ko can su dung status = true
+// mỗi khi chuyển trang thì dùng data của mảng đó 
+
+// 4 search time
+
+{/* <div className='table__container'>
+    <table className='table'>
+        <thead className='table__head'>
+            <tr className='table__head-item'>
+                <th className=''>ID</th>
+                <th className=''>Nhiệt độ (C)</th>
+                <th className=''>Độ Ẩm (%)</th>
+                <th className=''>Ánh sáng (lux)</th>
+                <th className=''>Thời gian</th>
+            </tr>
+        </thead>
+        <tbody className='table__body'>
+            {data.map((item) =>(
+                <tr key={item.id} className='table__body-item'>
+                    <td className=''>{item.id}</td>
+                    <td className=''>{item.temperature}</td>
+                    <td className=''>{item.humidity}</td>
+                    <td className=''>{item.light}</td>
+                    <td className=''>{item.time}</td>
+                </tr>
+            ))}
+        </tbody>
+    </table>
+</div> */} -->

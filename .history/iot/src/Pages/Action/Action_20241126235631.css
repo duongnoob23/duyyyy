@@ -1,0 +1,151 @@
+* {
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif; /* Change this to your preferred font */
+    font-size: 16px; /* Default font size */
+    line-height: 1.6; /* Controls line spacing */
+}
+
+
+.action {
+    border: 5px solid #2c3e50;
+    border-radius: 0 5px 5px 0;
+    height: 100vh; /* Full viewport height */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Distribute space evenly */
+}
+
+.action-title {
+    margin-left: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search {
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.search__input {
+    padding: 8px 15px;
+    border-radius: 8px;
+    outline: none;
+    border: 1px solid #2c3e50;
+    margin-right: 5px;
+    font-size: 16px;
+}
+
+.search__icon {
+    cursor: pointer;
+    font-size: 20px;
+    color: #2c3e50;
+}
+
+.select, .select2 {
+    margin-left: auto;
+    padding: 0 10px;
+}
+
+.select__list {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #2c3e50;
+    outline: none;
+    font-size: 16px;
+}
+
+/* Table container to control overflow */
+.table__container {
+    flex-grow: 1;
+    overflow-y: auto;
+    border-radius: 10px;
+    margin: 0 20px;
+    padding-bottom: 20px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table__head {
+    background-color: #2c3e50;
+    color: white;
+    border-radius: 10px 10px 0 0;
+}
+
+.table-row__head th, .table-row__body td {
+    padding: 10px;
+    text-align: center;
+}
+
+.table-row__body:nth-child(even) {
+    background-color: #f7f7f7;
+}
+
+.table-row__body:hover {
+    background-color: #2c3e50;
+    color: #F4C427;
+}
+
+/* Maintain height to ensure 10 rows fill the page */
+.table-row__body {
+    height: 40px; /* Adjust this based on design preferences */
+    transition: background-color 0.3s;
+}
+
+.table__body {
+    border-radius: 0 0 10px 10px;
+}
+
+.pagination {
+    margin-right: 20px;
+    padding: 10px 0;
+    text-align: right;
+}
+
+.pagi__list {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    font-size: 16px;
+}
+
+.pagi__item {
+    margin: 0 5px;
+    cursor: pointer;
+    padding: 5px 10px;
+    border: 1px solid #3498db;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.pagi__next, .pagi__pre {
+    color: #3498db;
+}
+
+.pagi__cur {
+    font-weight: bold;
+    color: #fff;
+    background-color: #15181b;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+
+/* Ensure last row visibility */
+.table__container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.table__container::-webkit-scrollbar-thumb {
+    background-color: #121518;
+    border-radius: 10px;
+}
